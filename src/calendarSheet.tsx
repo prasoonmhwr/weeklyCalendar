@@ -1,6 +1,9 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { makeStyles } from "@mui/styles";
 import Grid from "@mui/material/Grid";
+import { IconButton } from '@mui/material';
+import NavigateNextIcon from '@mui/icons-material/NavigateNext';
+import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore';
 
 const useStyles = makeStyles(() => ({
     root: {
@@ -36,7 +39,14 @@ const useStyles = makeStyles(() => ({
     date: {
         color: '#3c4043',
         fontSize: '26px',
-        width: '100%',
+        width: '46px',
+        height: '46px',
+        marginLeft: 'auto',
+        marginRight: 'auto',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        borderRadius: '100%'
     },
     headerDivider: {
         borderBottom: "1px solid #cfcfcf",
@@ -44,20 +54,98 @@ const useStyles = makeStyles(() => ({
         height: '10px',
         position: 'relative',
         bottom: 0
+    },
+    weekNavigator:{
+        height: '25px',
+        width: '100%',
+        display:'flex',
+        padding: '1em'
+    },
+    monthText: {
+        color: '#3c4043',
+        fontSize: '22px',
+        fontWeight: 400,
+        whiteSpace: 'nowrap',
+        marginLeft: 5
+    },
+    todayDate: {
+        backgroundColor: '#1a73e8',
+        fontSize: '25px',
+        color: 'white'
     }
+   
 }))
 
-export default function CalendarSheet(){
+function CalendarSheet(){
     const classes = useStyles();
-
+    const displayDays = ["SUN","MON","TUE","WED","THU","FRI","SAT"]
+    const months = ["January", "February", "March", "April", "May", "June","July", "August", "September", "October", "November", "December"]
+    let todayDate = new Date();
+    let dayToday = todayDate.getDay()
+    const [thisWeek,setThisWeek] = useState(() => {
+        let start = 0;
+        let end=6;
+        let startWeek = [0,1,2,3,4,5,6].map(i=>{
+            return new Date()
+        });
+        while(start<=dayToday && end > dayToday){
+            startWeek[start].setDate(startWeek[start].getDate() - (dayToday-start))
+            startWeek[end].setDate(startWeek[end].getDate() + (end-dayToday))
+            start++;
+            end--;
+        }
+        while(start<=dayToday){
+            startWeek[start].setDate(startWeek[start].getDate() - (dayToday-start))
+            start++;
+        }
+        while(end > dayToday){
+            startWeek[end].setDate(startWeek[end].getDate() + (end-dayToday))
+            end--;
+        }
+        return startWeek
+    })
+    
+    
+    function getWeek(date:Date,direction:String){
+        console.log(date)
+        let fromDate = new Date(date);
+        let week = [0,1,2,3,4,5,6].map(i=>{
+            return new Date()
+        });
+        if(direction === "next"){
+            for(let i=1;i<=7;i++){
+                week[i-1].setDate(fromDate.getDate() + i)
+            }
+            setThisWeek(week)
+        }
+        if(direction === "prev"){
+            for(let i=1;i<=7;i++){
+                week[7-i].setDate(fromDate.getDate() - i)
+            }
+            setThisWeek(week)
+        }
+        
+    }
+    
     return (
         <React.Fragment>
+            <div className={classes.weekNavigator}>
+                    <IconButton sx={{ color:"#5f6368"}} onClick={() => { getWeek(thisWeek[0],"prev"); }}>
+                        <NavigateBeforeIcon />
+                    </IconButton>
+                    <IconButton sx={{ color:"#5f6368"}} onClick={() => { getWeek(thisWeek[6],"next"); }}>
+                        <NavigateNextIcon />
+                    </IconButton>
+                <div className={classes.monthText}>
+                    {months[todayDate.getMonth()]}, {todayDate.getFullYear()}
+                </div>
+            </div>
              <Grid container  style={{width: '100%'}}>
                 <Grid container style={{ marginLeft: 2, marginTop: 2}} item  spacing={0}>
-                    {['SUN','MON','TUE','WED','THU','FRI','SAT'].map((value) => (
-                        <Grid key={value} item className={classes.header}>
-                            <div className={classes.dayName}>{value}</div>
-                            <div className={classes.date}>2</div>
+                    {thisWeek.map((value,index) => (
+                        <Grid item className={classes.header}>
+                            <div className={classes.dayName}>{displayDays[index]}</div>
+                            <div className={`${value.getDate() === todayDate.getDate()?classes.todayDate:''} ${classes.date}`}>{value.getDate()}</div>
                             <div className={classes.headerDivider}></div>
                         </Grid>
                     ))}
@@ -75,3 +163,5 @@ export default function CalendarSheet(){
         </React.Fragment>
     )
 }
+
+export default React.memo(CalendarSheet)
