@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { makeStyles } from "@mui/styles";
 import Grid from "@mui/material/Grid";
 import { IconButton } from '@mui/material';
@@ -72,6 +72,12 @@ const useStyles = makeStyles(() => ({
         backgroundColor: '#1a73e8',
         fontSize: '25px',
         color: 'white'
+    },
+    todayDay: {
+        color: '#1a73e8'
+    },
+    prevDates:{
+        color: '#70757a'
     }
    
 }))
@@ -80,7 +86,7 @@ function CalendarSheet(){
     const classes = useStyles();
     const displayDays = ["SUN","MON","TUE","WED","THU","FRI","SAT"]
     const months = ["January", "February", "March", "April", "May", "June","July", "August", "September", "October", "November", "December"]
-    let todayDate = new Date();
+    const [todayDate,setTodayDate] = useState(new Date());
     let dayToday = todayDate.getDay()
     const [thisWeek,setThisWeek] = useState(() => {
         let start = 0;
@@ -105,28 +111,32 @@ function CalendarSheet(){
         return startWeek
     })
     
-    
     function getWeek(date:Date,direction:String){
-        console.log(date)
         let fromDate = new Date(date);
+        console.log(fromDate)
         let week = [0,1,2,3,4,5,6].map(i=>{
-            return new Date()
+            return new Date(date)
         });
         if(direction === "next"){
             for(let i=1;i<=7;i++){
                 week[i-1].setDate(fromDate.getDate() + i)
+                console.log(week[i-1])
             }
+            console.log(week)
             setThisWeek(week)
         }
         if(direction === "prev"){
             for(let i=1;i<=7;i++){
                 week[7-i].setDate(fromDate.getDate() - i)
             }
+            // console.log(week)
             setThisWeek(week)
         }
         
     }
-    
+    function calculateMonthHeader(date1:Date, date2:Date){
+        return date1.getMonth() == date2.getMonth()? months[date2.getMonth()]: `${months[date1.getMonth()].substring(0,3)} - ${months[date2.getMonth()].substring(0,3)}`
+    }
     return (
         <React.Fragment>
             <div className={classes.weekNavigator}>
@@ -137,15 +147,15 @@ function CalendarSheet(){
                         <NavigateNextIcon />
                     </IconButton>
                 <div className={classes.monthText}>
-                    {months[todayDate.getMonth()]}, {todayDate.getFullYear()}
+                    {calculateMonthHeader(thisWeek[0],thisWeek[6])}, {todayDate.getFullYear()}
                 </div>
             </div>
              <Grid container  style={{width: '100%'}}>
                 <Grid container style={{ marginLeft: 2, marginTop: 2}} item  spacing={0}>
                     {thisWeek.map((value,index) => (
                         <Grid item className={classes.header}>
-                            <div className={classes.dayName}>{displayDays[index]}</div>
-                            <div className={`${value.getDate() === todayDate.getDate()?classes.todayDate:''} ${classes.date}`}>{value.getDate()}</div>
+                            <div className={`${(value.getDate() === todayDate.getDate() && value.getMonth() === todayDate.getMonth() && value.getFullYear() === todayDate.getFullYear())?classes.todayDay:''} ${classes.dayName}`}>{displayDays[index]}</div>
+                            <div className={`${(value.getDate() === todayDate.getDate() && value.getMonth() === todayDate.getMonth() && value.getFullYear() === todayDate.getFullYear())?classes.todayDate:''} ${value.getTime()<todayDate.getTime()?classes.prevDates:''} ${classes.date}`}>{value.getDate()}</div>
                             <div className={classes.headerDivider}></div>
                         </Grid>
                     ))}
