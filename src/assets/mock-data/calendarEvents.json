@@ -1,0 +1,29 @@
+{
+    "events": [
+        {
+            "title": "Lorem ipsum dolor sit amet",
+            "dateTime": "1633656600000",
+            "duration": 30
+        },
+        {
+            "title": "Lorem ipsum dolor sit amet",
+            "dateTime": "1633521600000",
+            "duration": 60
+        },
+        {
+            "title": "Lorem ipsum dolor sit amet",
+            "dateTime": "1633631400000",
+            "duration": 45
+        },
+        {
+            "title": "Lorem ipsum dolor sit amet",
+            "dateTime": "1633631400000",
+            "duration": 30
+        },
+        {
+            "title": "Lorem ipsum dolor sit amet",
+            "dateTime": "1633631400000",
+            "duration": 30
+        }
+    ]
+}

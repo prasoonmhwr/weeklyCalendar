@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { makeStyles } from "@mui/styles";
 import Grid from "@mui/material/Grid";
 import { IconButton } from '@mui/material';
@@ -18,9 +18,8 @@ const useStyles = makeStyles(() => ({
         borderBottom: "1px solid #cfcfcf",
         borderLeft: '1px solid #cfcfcf',
         flexGrow: 1,
-        minHeight: '50px',
-        height: '50px',
-        gridRowGap: 1,
+        minHeight: '60px',
+        height: '60px'
     },
     header: {
         flexGrow: 1,
@@ -78,6 +77,43 @@ const useStyles = makeStyles(() => ({
     },
     prevDates:{
         color: '#70757a'
+    },
+    time: {
+        color: '#70757a',
+        fontSize: '10px',
+        width:'5%',
+        position: 'relative',
+        top: '-7px'
+    },
+    timeZone: {
+        color: '#70757a',
+        fontSize: '10px',
+        width:'5%',
+        position: 'relative',
+        display: 'flex',
+        alignItems: 'flex-end',
+        justifyContent: 'center',
+        top: '-7px'
+    },
+    timeSlider: {
+        position: 'relative',
+        zIndex: 505,
+        borderTop: '#ea4335 solid 2px',
+        left: 0,
+        right: 0,
+        pointerEvents: 'none',
+
+        '&::before': {
+            background: '#ea4335',
+            borderRadius: '50%',
+            content: "''",
+            position: 'absolute',
+            height: '12px',
+            marginLeft: '-122.5px',
+            marginTop: '-7px',
+            width: '12px',
+            zIndex: '505'
+        }
     }
    
 }))
@@ -87,7 +123,25 @@ function CalendarSheet(){
     const displayDays = ["SUN","MON","TUE","WED","THU","FRI","SAT"]
     const months = ["January", "February", "March", "April", "May", "June","July", "August", "September", "October", "November", "December"]
     const [todayDate,setTodayDate] = useState(new Date());
+    const [currentHour,setCurrentHour] = useState(()=> {
+        let date = new Date()
+        return date.getHours()
+    });
+    const [currentMin,setCurrentMin] = useState(()=> {
+        let date = new Date()
+        return date.getMinutes() - 1 
+    });
     let dayToday = todayDate.getDay()
+    const [timeZone,setTimeZone] = useState(() => {
+        let zone = todayDate.toString()!.match(/GMT\+[0-9]+/)![0]
+        return zone 
+    })
+    
+    // if (typeof timeZone === 'string') {
+    //     timeZone = timeZone?.match(/GMT\+[0-9]+/)[0]
+    // }
+    // console.log()
+    // timeZone = timeZone && timeZone.match(/GMT\+[0-9]+/)[0]
     const [thisWeek,setThisWeek] = useState(() => {
         let start = 0;
         let end=6;
@@ -135,8 +189,19 @@ function CalendarSheet(){
         
     }
     function calculateMonthHeader(date1:Date, date2:Date){
-        return date1.getMonth() == date2.getMonth()? months[date2.getMonth()]: `${months[date1.getMonth()].substring(0,3)} - ${months[date2.getMonth()].substring(0,3)}`
+        return date1.getMonth() === date2.getMonth()? months[date2.getMonth()]: `${months[date1.getMonth()].substring(0,3)} - ${months[date2.getMonth()].substring(0,3)}`
     }
+    function calculateTimeSliderPosition(){
+        let date = new Date()
+        let hour = date.getHours();
+        let minute = date.getMinutes();
+        setCurrentHour(hour)
+        setCurrentMin(minute-1)
+    }
+    useEffect(() => {
+        const interval = setInterval(calculateTimeSliderPosition,10000)
+        return ()=> clearInterval(interval)
+    },[])
     return (
         <React.Fragment>
             <div className={classes.weekNavigator}>
@@ -150,8 +215,11 @@ function CalendarSheet(){
                     {calculateMonthHeader(thisWeek[0],thisWeek[6])}, {todayDate.getFullYear()}
                 </div>
             </div>
-             <Grid container  style={{width: '100%'}}>
-                <Grid container style={{ marginLeft: 2, marginTop: 2}} item  spacing={0}>
+            
+            <Grid container className={classes.root}>
+            <Grid container  style={{width: '100%'}}>
+                <Grid container style={{  marginTop: 2}} item  spacing={0}>
+                <div className={classes.timeZone}>{timeZone}</div>
                     {thisWeek.map((value,index) => (
                         <Grid item className={classes.header}>
                             <div className={`${(value.getDate() === todayDate.getDate() && value.getMonth() === todayDate.getMonth() && value.getFullYear() === todayDate.getFullYear())?classes.todayDay:''} ${classes.dayName}`}>{displayDays[index]}</div>
@@ -161,11 +229,14 @@ function CalendarSheet(){
                     ))}
                 </Grid>
             </Grid>
-            <Grid container className={classes.root}>
-            {[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23].map((value) => (
-                <Grid key={value} container item spacing={0}>
-                {['SU','M','T','W','TH','F','SA'].map((value) => (
-                    <Grid key={value} item className={classes.grid}></Grid>
+            
+            {[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23].map((hourValue) => (
+                <Grid key={hourValue} container item  spacing={0}>
+                {hourValue === 0 ?<div className={classes.time}></div> :<div className={classes.time}>{hourValue > 11?`${hourValue === 12?hourValue:hourValue%12} PM`:`${hourValue} AM`}</div>}
+                {thisWeek.map((value,index) => (
+                    <Grid key={index}  item  spacing={0} className={classes.grid}>
+                        {value.getDate() === todayDate.getDate() && hourValue === currentHour && <div className={classes.timeSlider} style={{ top: (currentMin)+'px'}}></div>}
+                    </Grid>
                 ))}
                 </Grid>
             ))}
