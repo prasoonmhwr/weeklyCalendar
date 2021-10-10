@@ -1,29 +1,58 @@
 {
     "events": [
         {
+            "eventId": 1,
             "title": "Lorem ipsum dolor sit amet",
-            "dateTime": "1633656600000",
+            "dateTime": 1633656600000,
             "duration": 30
         },
         {
+            "eventId": 2,
             "title": "Lorem ipsum dolor sit amet",
-            "dateTime": "1633521600000",
+            "dateTime": 1633521600000,
             "duration": 60
         },
         {
+            "eventId": 3,
             "title": "Lorem ipsum dolor sit amet",
-            "dateTime": "1633631400000",
+            "dateTime": 1633631400000,
             "duration": 45
         },
         {
+            "eventId": 4,
             "title": "Lorem ipsum dolor sit amet",
-            "dateTime": "1633631400000",
+            "dateTime": 1633631400000,
             "duration": 30
         },
         {
+            "eventId": 5,
             "title": "Lorem ipsum dolor sit amet",
-            "dateTime": "1633631400000",
+            "dateTime": 1633631400000,
             "duration": 30
+        },
+        {
+            "eventId": 6,
+            "title": "Event 1",
+            "dateTime": 1633905900000,
+            "duration": 60 
+        },
+        {
+            "eventId": 7,
+            "title": "Event 2",
+            "dateTime": 1634095800000,
+            "duration": 45
+        },
+        {
+            "eventId": 8,
+            "title": "Event 3",
+            "dateTime": 1634029200000,
+            "duration": 16
+        },
+        {
+            "eventId":9,
+            "title": "Dussehra",
+            "dateTime": 1634272200000,
+            "duration": 240
         }
     ]
 }
