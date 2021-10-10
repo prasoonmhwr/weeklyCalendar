@@ -2,6 +2,8 @@
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
+**Note: Events are available between 3rd Oct 2021 and 16th Oct 2021**
+
 ## Available Scripts
 
 In the project directory, you can run:

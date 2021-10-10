@@ -15,20 +15,20 @@
         {
             "eventId": 3,
             "title": "Lorem ipsum dolor sit amet",
-            "dateTime": 1633631400000,
-            "duration": 45
+            "dateTime": 1633249800000,
+            "duration": 60
         },
         {
             "eventId": 4,
             "title": "Lorem ipsum dolor sit amet",
-            "dateTime": 1633631400000,
-            "duration": 30
+            "dateTime": 1633586400000,
+            "duration": 45
         },
         {
             "eventId": 5,
             "title": "Lorem ipsum dolor sit amet",
             "dateTime": 1633631400000,
-            "duration": 30
+            "duration": 45
         },
         {
             "eventId": 6,
